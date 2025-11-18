@@ -1,5 +1,5 @@
 const User = require("../models/user");
-//# Package to encrypt data
+//% Package to encrypt data
 const bcrypt = require("bcryptjs");
 
 exports.getLogin = (req, res, next) => {
@@ -11,16 +11,36 @@ exports.getLogin = (req, res, next) => {
 };
 
 exports.postLogin = (req, res, next) => {
-  console.log(req.session);
+  const email = req.body.email;
+  const password = req.body.password;
 
-  User.findById("6919cd45d0ee26caa306dc6c")
+  //* Finding a user by their email
+  User.findOne({ email: email })
     .then((user) => {
-      req.session.isLoggedIn = true;
-      req.session.user = user;
-      req.session.save((err) => {
-        console.log(err);
-        res.redirect("/");
-      });
+      if (!user) {
+        return res.redirect("/login");
+      }
+      //* Validating the password
+      //> Passing the password into bcrypt and it compares it to the hashed value
+      //# bcrypt.compare() returns a promise
+      // Comparing the user entered password with the existing one in the database
+      bcrypt
+        .compare(password, user.password)
+        .then((isMatching) => {
+          if (isMatching) {
+            req.session.isLoggedIn = true;
+            req.session.user = user;
+            return req.session.save((err) => {
+              console.log(err);
+              res.redirect("/");
+            });
+          }
+          res.redirect("/login");
+        })
+        .catch((err) => {
+          console.log(err);
+          res.redirect("/login");
+        });
     })
     .catch((err) => console.log(err));
 };
