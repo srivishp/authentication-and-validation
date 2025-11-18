@@ -2,8 +2,9 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const userSchema = new Schema({
-  name: { type: String, required: true },
+  // name: { type: String, required: true },
   email: { type: String, required: true },
+  password: { type: String, required: true },
   cart: {
     items: [
       {
@@ -25,7 +26,7 @@ const userSchema = new Schema({
 userSchema.methods.addToCart = function (product) {
   //checking if product already exists in cart
   const cartProductIndex = this.cart.items.findIndex((cp) => {
-    // == can be used but using both sides toString() for safety & is also a good practice
+    //% == can be used but using both sides toString() for safety & is also a good practice
     return cp.productId.toString() === product._id.toString();
   });
   let newQuantity = 1;
@@ -37,7 +38,7 @@ userSchema.methods.addToCart = function (product) {
     updatedCartItems[cartProductIndex].quantity = newQuantity;
   } else {
     updatedCartItems.push({
-      // Mongoose will automatically convert the id to ObjectId type
+      // Mongoose will automatically con>ert the id to ObjectId type
       productId: product._id,
       quantity: newQuantity,
     });

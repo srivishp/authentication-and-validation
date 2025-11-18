@@ -24,7 +24,7 @@ exports.postAddProduct = (req, res, next) => {
     description: description,
     price: price,
     // every product is associated with a user
-    //-> Mongoose allows to store the entire user object or just the user._id
+    //> Mongoose allows to store the entire user object or just the user._id
     // If we store the whole object, it will automatically extract the id and store it in the database
     userId: req.user,
   });
