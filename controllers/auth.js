@@ -53,6 +53,7 @@ exports.postLogout = (req, res, next) => {
   });
 };
 
+// SIGN UP SECTION
 exports.getSignup = (req, res, next) => {
   res.render("auth/signup", {
     path: "/signup",

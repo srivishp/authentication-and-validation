@@ -46,6 +46,10 @@ exports.getIndex = (req, res, next) => {
         // For load of every page we need the user to be logged in
         // So, we check for the login status on all render() calls
         isAuthenticated: req.session.isLoggedIn,
+        //# For CSRF tokens to work on POST requests, the token must be present in the views first.
+        // So we are adding it here first, as this is the landing page where we click log out
+        //? csrfToken() is provided by the package
+        csrfToken: req.csrfToken(),
       });
     })
     .catch((err) => {

@@ -11,6 +11,9 @@ const session = require("express-session");
 const MongoDBStore = require("connect-mongodb-session")(session);
 const MONGODB_URI =
   "mongodb+srv://srivishp:Mongo2026@cluster0.1p7s5t7.mongodb.net/shop?appName=Cluster0";
+//% Package to prevent CSRF attacks
+const csrf = require("csurf");
+const csrfProtection = csrf();
 
 app.set("view engine", "ejs");
 app.set("views", "views");
@@ -22,6 +25,7 @@ const store = new MongoDBStore({
 const adminRoutes = require("./routes/admin");
 const shopRoutes = require("./routes/shop");
 const authRoutes = require("./routes/auth");
+
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
 app.use(
@@ -32,6 +36,8 @@ app.use(
     store: store,
   })
 );
+//> CSRF middleware must be initialized after the session middlewar, as it requires the session
+app.use(csrfProtection);
 
 app.use((req, res, next) => {
   if (!req.session.user) {
