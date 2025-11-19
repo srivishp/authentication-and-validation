@@ -14,6 +14,8 @@ const MONGODB_URI =
 //% Package to prevent CSRF attacks
 const csrf = require("csurf");
 const csrfProtection = csrf();
+//% Package to display flash messages to users upon redirection or login/sign up etc
+const flash = require("connect-flash");
 
 app.set("view engine", "ejs");
 app.set("views", "views");
@@ -38,7 +40,8 @@ app.use(
 );
 //> CSRF middleware must be initialized after the session middlewar, as it requires the session
 app.use(csrfProtection);
-
+// Using the flash message middleware
+app.use(flash());
 app.use((req, res, next) => {
   if (!req.session.user) {
     return next();
@@ -49,6 +52,19 @@ app.use((req, res, next) => {
       next();
     })
     .catch((err) => console.log(err));
+});
+
+app.use((req, res, next) => {
+  //% Implementing isAuthenticated & CSRF token in one place
+  // For load of every page we need the user to be logged in
+  // So, we check for the login status on all render() calls
+  //* Express JS feature which allows the use of local variables in the views
+  (res.locals.isAuthenticated = req.session.isLoggedIn),
+    //# For CSRF tokens to work on POST requests, the token must be present in the views first.
+    // So we are adding it here first, as this is the landing page where we click log out
+    //? csrfToken() is provided by the package
+    (res.locals.csrfToken = req.csrfToken());
+  next();
 });
 
 app.use("/admin", adminRoutes);
