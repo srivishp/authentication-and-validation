@@ -1,4 +1,12 @@
 const User = require("../models/user");
+const nodemailer = require("nodemailer");
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: "your@email.com",
+    pass: "your password",
+  },
+});
 //% Package to encrypt data
 const bcrypt = require("bcryptjs");
 
@@ -106,6 +114,12 @@ exports.postSignup = (req, res, next) => {
       })
       .then((result) => {
         res.redirect("/login");
+        return transporter.sendMail({
+          to: email,
+          from: "your@email.com",
+          subject: "Sign up successful!",
+          html: "<h1>Welcome to the testing marketplace</h1>",
+        });
       })
       .catch((err) => {
         console.log(err);
@@ -126,3 +140,4 @@ exports.getReset = (req, res, next) => {
     errorMessage: message,
   });
 };
+// 342ae971182a1afd4ca5bf825d44d716-us7
