@@ -1,12 +1,12 @@
 const User = require("../models/user");
 const nodemailer = require("nodemailer");
-const transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: "your@email.com",
-    pass: "your password",
-  },
-});
+// const transporter = nodemailer.createTransport({
+//   service: "gmail",
+//   auth: {
+//     user: "your@email.com",
+//     pass: "your password",
+//   },
+// });
 //% Package to encrypt data
 const bcrypt = require("bcryptjs");
 
